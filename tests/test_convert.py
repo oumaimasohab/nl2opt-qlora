@@ -107,3 +107,21 @@ def test_rendered_program_matches_in_process_solve():
     assert solve(model) == ("Optimal", pytest.approx(36))
     r = run_program(to_program(model))
     assert r.status == "Optimal" and r.objective == pytest.approx(36)
+
+
+@pytest.mark.parametrize("constraint", [
+    {"type": "ratio", "var": "x", "limit": "30%", "direction": "at most", "operator": LE},
+    {"type": "ratio", "var": "y", "limit": "40%", "direction": "at least", "operator": GE},
+    {"type": "linear", "terms": {"x": "0.5", "y": "0.1"}, "limit": "30%", "direction": "at most", "operator": LE},
+])
+def test_literal_ratio_style_is_the_same_constraint(constraint):
+    rec = record([
+        {"type": "linear", "terms": {"x": "3", "y": "2"}, "limit": "18", "direction": "at most", "operator": LE},
+        constraint,
+    ])
+    model = parse(rec)
+    simplified, literal = to_program(model), to_program(model, ratio_style="literal")
+    assert "* (x + y)" in literal and "* (x + y)" not in simplified
+    a, b = run_program(simplified), run_program(literal)
+    assert a.status == b.status == "Optimal"
+    assert a.objective == pytest.approx(b.objective) == pytest.approx(solve(model)[1])

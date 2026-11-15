@@ -107,6 +107,8 @@ def parse(record):
 
     objective:   {var: coef}
     constraints: list of {'coefs': {var: coef}, 'op': '<='|'>=', 'rhs': float, 'kind', 'text'}
+                 Share-of-total constraints also carry 'share': {'lhs': {var: coef}, 'p': float}, the
+                 unsimplified form lhs op p * (sum of all vars); 'coefs' holds lhs - p * total.
     """
     raw_names = record["vars"]
     order = record["order_mapping"]
@@ -129,6 +131,7 @@ def parse(record):
     constraints = []
     for c in record["const_declarations"]:
         t, op = c["type"], OPS[c["operator"]]
+        share = None
         if t == "linear":
             if not c["terms"]:
                 raise IncompleteFormulation(f"linear constraint '{c['direction']} {c['limit']}' has no terms")
@@ -140,6 +143,7 @@ def parse(record):
             if "%" in c["limit"] or "percent" in c["limit"]:
                 # A percentage cap on a weighted sum is a weighted average over the total:
                 # "average chance of losing at most 30%" -> sum(c_i x_i) <= 0.3 * sum(x_i).
+                share = {"lhs": dict(coefs), "p": rhs}
                 coefs = {v: coefs.get(v, 0.0) - rhs for v in names}
                 rhs, text = 0.0, f"weighted average {c['direction']} {c['limit']}"
         elif t == "sum":
@@ -159,10 +163,14 @@ def parse(record):
         elif t == "ratio":
             x, p = var(c["var"]), parse_fraction(c["limit"])
             coefs = {v: (1.0 - p if v == x else -p) for v in names}
+            share = {"lhs": {x: 1.0}, "p": p}
             rhs, text = 0.0, f"{x} {c['direction']} {p:.4g} of total ({c['limit']})"
         else:
             raise ValueError(f"unknown constraint type {t!r}")
-        constraints.append({"coefs": coefs, "op": op, "rhs": rhs, "kind": t, "text": text})
+        constraint = {"coefs": coefs, "op": op, "rhs": rhs, "kind": t, "text": text}
+        if share is not None:
+            constraint["share"] = share
+        constraints.append(constraint)
 
     model = {
         "vars": list(names),
@@ -277,7 +285,22 @@ def linear_expr(coefs, ids):
     return s[2:] if s.startswith("+ ") else "-" + s[2:]
 
 
-def to_program(model):
+RATIO_STYLES = ("simplified", "literal")
+
+
+def constraint_line(c, ids, all_vars, ratio_style="simplified"):
+    """One ``prob += ...`` line. Share-of-total constraints render either simplified
+    (``0.7 * x - 0.3 * y <= 0``) or literal (``x <= 0.3 * (x + y)``); both are the same constraint."""
+    if ratio_style not in RATIO_STYLES:
+        raise ValueError(f"ratio_style must be one of {RATIO_STYLES}")
+    if ratio_style == "literal" and "share" in c:
+        total = linear_expr({v: 1.0 for v in all_vars}, ids)
+        rhs = f"{fmt(c['share']['p'])} * ({total})"
+        return f"prob += {linear_expr(c['share']['lhs'], ids)} {c['op']} {rhs}  # {c['text']}"
+    return f"prob += {linear_expr(c['coefs'], ids)} {c['op']} {fmt(c['rhs'])}  # {c['text']}"
+
+
+def to_program(model, ratio_style="simplified"):
     """Render a canonical model as a complete PuLP + HiGHS script."""
     ids = identifiers(model["vars"])
     ints = set(model["integer"])
@@ -295,7 +318,7 @@ def to_program(model):
     lines += ["", f"# Objective: {model['sense']} {model['objective_name']}",
               f"prob += {linear_expr(model['objective'], ids)}", "", "# Constraints"]
     for c in model["constraints"]:
-        lines.append(f"prob += {linear_expr(c['coefs'], ids)} {c['op']} {fmt(c['rhs'])}  # {c['text']}")
+        lines.append(constraint_line(c, ids, model["vars"], ratio_style))
     lines += [
         "",
         'prob.solve(pulp.getSolver("HiGHS", msg=False))',

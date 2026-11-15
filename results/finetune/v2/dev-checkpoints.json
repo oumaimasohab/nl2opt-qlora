@@ -1,0 +1,147 @@
+[
+  {
+    "iteration": 100,
+    "n": 90,
+    "accuracy": 0.6444,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9667,
+    "optimal_rate": 0.9,
+    "counts": {
+      "correct": 58,
+      "wrong_value": 23,
+      "not_optimal": 6,
+      "no_solve": 0,
+      "runtime_error": 3,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 3
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 244.9,
+    "generation_seconds_this_run": 228.6
+  },
+  {
+    "iteration": 200,
+    "n": 90,
+    "accuracy": 0.7556,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9667,
+    "optimal_rate": 0.9,
+    "counts": {
+      "correct": 68,
+      "wrong_value": 13,
+      "not_optimal": 6,
+      "no_solve": 0,
+      "runtime_error": 3,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 2,
+      "name_typo": 1
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 248.4,
+    "generation_seconds_this_run": 221.7
+  },
+  {
+    "iteration": 300,
+    "n": 90,
+    "accuracy": 0.8,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9778,
+    "optimal_rate": 0.9333,
+    "counts": {
+      "correct": 72,
+      "wrong_value": 12,
+      "not_optimal": 4,
+      "no_solve": 0,
+      "runtime_error": 2,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 2
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 247.7,
+    "generation_seconds_this_run": 240.0
+  },
+  {
+    "iteration": 400,
+    "n": 90,
+    "accuracy": 0.8111,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9889,
+    "optimal_rate": 0.9667,
+    "counts": {
+      "correct": 73,
+      "wrong_value": 14,
+      "not_optimal": 2,
+      "no_solve": 0,
+      "runtime_error": 1,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 1
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 247.3,
+    "generation_seconds_this_run": 242.3
+  },
+  {
+    "iteration": 500,
+    "n": 90,
+    "accuracy": 0.8444,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9889,
+    "optimal_rate": 0.9556,
+    "counts": {
+      "correct": 76,
+      "wrong_value": 10,
+      "not_optimal": 3,
+      "no_solve": 0,
+      "runtime_error": 1,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 1
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 247.3,
+    "generation_seconds_this_run": 244.1
+  },
+  {
+    "iteration": 520,
+    "n": 90,
+    "accuracy": 0.8444,
+    "code_found_rate": 1.0,
+    "runs_rate": 0.9889,
+    "optimal_rate": 0.9556,
+    "counts": {
+      "correct": 76,
+      "wrong_value": 10,
+      "not_optimal": 3,
+      "no_solve": 0,
+      "runtime_error": 1,
+      "timeout": 0,
+      "no_code": 0
+    },
+    "runtime_error_categories": {
+      "strict_inequality": 1
+    },
+    "objective_from_stdout": 0,
+    "truncated": 0,
+    "mean_generation_tokens": 247.3,
+    "generation_seconds_this_run": 256.8
+  }
+]

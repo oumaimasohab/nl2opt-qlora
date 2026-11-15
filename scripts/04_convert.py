@@ -1,8 +1,9 @@
 """Convert every NL4Opt formulation to a PuLP program, run each program, and validate.
 
 For each record in train/dev/test:
-  - parse the formulation and decide integer variables (scripts/convert.py),
-  - render a PuLP + HiGHS program,
+  - parse the formulation and decide integer variables (nl2opt/convert.py),
+  - render a PuLP + HiGHS program, twice: share-of-total constraints simplified
+    (0.7*x - 0.3*y <= 0, field "program") and as stated (x <= 0.3*(x + y), "program_literal"),
   - run the program in a fresh interpreter and check its printed objective equals an
     in-process solve of the same model (catches rendering bugs).
 Then compare test objectives with the CardinalOperations/NL4OPT reference optima.
@@ -66,19 +67,24 @@ def convert_split(split):
                 "vars": model["vars"],
                 "integer_vars": model["integer"],
                 "program": to_program(model),
+                # Same model with share-of-total constraints written as stated: x <= 0.3 * (x + y).
+                "program_literal": to_program(model, ratio_style="literal"),
                 "status": status,
                 "objective": objective,
             })
     with ThreadPoolExecutor(max_workers=8) as ex:
         runs = list(ex.map(lambda r: run_program(r["program"]), rows))
+        runs_literal = list(ex.map(lambda r: run_program(r["program_literal"]), rows))
     problems = []
-    for row, (rc, st, val, err) in zip(rows, runs):
+    checks = [("program", row, run) for row, run in zip(rows, runs)]
+    checks += [("program_literal", row, run) for row, run in zip(rows, runs_literal)]
+    for field, row, (rc, st, val, err) in checks:
         # Objectives are only meaningful for Optimal solves; otherwise compare status alone.
         same = st == row["status"] and (
             st != "Optimal" or (val is not None and math.isclose(val, row["objective"], **TOL))
         )
         if rc != 0 or not same:
-            problems.append({"id": row["id"], "returncode": rc, "program_status": st,
+            problems.append({"id": row["id"], "field": field, "returncode": rc, "program_status": st,
                              "program_objective": val, "model_objective": row["objective"], "stderr": err})
     with (PROC / f"nl4opt_{split}.pulp.jsonl").open("w", encoding="utf-8") as f:
         for row in rows:
