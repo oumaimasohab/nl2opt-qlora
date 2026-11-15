@@ -1,0 +1,20 @@
+{
+  "n": 90,
+  "accuracy": 0.4,
+  "code_found_rate": 1.0,
+  "runs_rate": 0.8333,
+  "optimal_rate": 0.8222,
+  "counts": {
+    "correct": 36,
+    "wrong_value": 38,
+    "not_optimal": 1,
+    "no_solve": 0,
+    "runtime_error": 15,
+    "timeout": 0,
+    "no_code": 0
+  },
+  "truncated": 0,
+  "mean_generation_tokens": 241.4,
+  "generation_seconds_this_run": 290.0,
+  "objective_from_stdout": 0
+}

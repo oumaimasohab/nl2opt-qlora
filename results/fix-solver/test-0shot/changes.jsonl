@@ -1,0 +1,6 @@
+{"id": "test:1", "before": "runtime_error", "after": "correct", "error_before": "solver_as_string", "error_after": null}
+{"id": "test:110", "before": "runtime_error", "after": "correct", "error_before": "solver_as_string", "error_after": null}
+{"id": "test:174", "before": "runtime_error", "after": "correct", "error_before": "solver_as_string", "error_after": null}
+{"id": "test:203", "before": "runtime_error", "after": "correct", "error_before": "solver_as_string", "error_after": null}
+{"id": "test:234", "before": "runtime_error", "after": "wrong_value", "error_before": "solver_as_string", "error_after": null}
+{"id": "test:243", "before": "runtime_error", "after": "correct", "error_before": "solver_as_string", "error_after": null}

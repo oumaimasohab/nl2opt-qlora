@@ -1,0 +1,31 @@
+{
+  "n_items": 90,
+  "shots": 0,
+  "exemplar_ids": [],
+  "prompt_fingerprint": "3e3d64fb0e2e51b2",
+  "max_tokens": 1024,
+  "decoding": "greedy",
+  "batch_size": 8,
+  "exec_timeout_s": 30.0,
+  "tolerance": {
+    "rel": 0.0001,
+    "abs": 0.0001
+  },
+  "versions": {
+    "python": "3.12.12",
+    "mlx": "0.32.4",
+    "mlx-lm": "0.32.2",
+    "pulp": "3.3.2",
+    "highspy": "1.16.0",
+    "nl2opt": "0.1.0"
+  },
+  "model": "mlx-community/Qwen2.5-Coder-3B-Instruct-4bit",
+  "adapter": null,
+  "split": "dev",
+  "eval_set": "data/eval/dev.jsonl",
+  "limit": null,
+  "rescored_from": "results/baselines/dev-0shot",
+  "fixes": [
+    "imports"
+  ]
+}

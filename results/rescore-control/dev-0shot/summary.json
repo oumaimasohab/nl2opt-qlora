@@ -1,0 +1,28 @@
+{
+  "n": 90,
+  "accuracy": 0.0,
+  "code_found_rate": 1.0,
+  "runs_rate": 0.0111,
+  "optimal_rate": 0.0111,
+  "counts": {
+    "correct": 0,
+    "wrong_value": 1,
+    "not_optimal": 0,
+    "no_solve": 0,
+    "runtime_error": 89,
+    "timeout": 0,
+    "no_code": 0
+  },
+  "runtime_error_categories": {
+    "missing_pulp_import": 58,
+    "solver_as_string": 17,
+    "strict_inequality": 10,
+    "syntax_error": 2,
+    "name_typo": 1,
+    "other": 1
+  },
+  "objective_from_stdout": 0,
+  "mean_generation_tokens": 271.6,
+  "source_accuracy": 0.0,
+  "accuracy_delta": 0.0
+}

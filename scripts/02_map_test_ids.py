@@ -10,9 +10,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from textsim import jaccard, load_cardinal, load_nl4opt, normalize, numbers, shingles  # noqa: E402
+from nl2opt.textsim import jaccard, load_cardinal, load_nl4opt, normalize, numbers, shingles
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
@@ -22,6 +20,17 @@ FUZZY_MIN = 0.80  # below this a match is reported as unmapped
 # Checked by hand: cardinal_idx -> NL4Opt test id. Item 28 is the test problem rewritten
 # with its numbers moved into a "Concrete Data:" block (same numbers), so text match fails.
 MANUAL = {28: "1117636837"}
+
+
+def is_sentinel(answer):
+    text = str(answer).strip()
+    if text.startswith("-99999"):
+        return True
+    try:
+        float(text)
+        return False
+    except ValueError:
+        return True
 
 
 def main():
@@ -57,8 +66,8 @@ def main():
             "numbers_equal": numbers(q) == numbers(best["document"]),
             "also_in": sorted({r["split"] for r in exact} - {best["split"]}),
             "en_answer": c.get("en_answer"),
-            # -99999 is CardinalOperations' placeholder, not an optimum; exclude these from scoring.
-            "answer_sentinel": str(c.get("en_answer")).strip().startswith("-99999"),
+            # "-99999" and "No Best Solution" are CardinalOperations placeholders, not optima.
+            "answer_sentinel": is_sentinel(c.get("en_answer")),
         })
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -72,7 +81,7 @@ def main():
     print("mapped split:", dict(Counter(r["nl4opt_split"] for r in out)))
     print("fuzzy with differing numbers:", sum(1 for r in out if r["method"] == "fuzzy" and not r["numbers_equal"]))
     print("duplicate ids:", len(ids) - len(set(ids)))
-    print("sentinel answers (-99999):", [r["cardinal_idx"] for r in out if r["answer_sentinel"]])
+    print("sentinel answers (-99999 / No Best Solution):", [r["cardinal_idx"] for r in out if r["answer_sentinel"]])
     print("lowest scores:", sorted(r["score"] for r in out)[:8])
     print(f"wrote {OUT}")
 

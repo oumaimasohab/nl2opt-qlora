@@ -18,9 +18,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from textsim import jaccard, load_nl4opt, normalize, shingles  # noqa: E402
+from nl2opt.textsim import jaccard, load_nl4opt, normalize, shingles
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "nl4opt"

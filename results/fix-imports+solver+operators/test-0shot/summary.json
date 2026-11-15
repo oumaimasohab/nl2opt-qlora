@@ -1,0 +1,25 @@
+{
+  "n": 213,
+  "accuracy": 0.507,
+  "code_found_rate": 1.0,
+  "runs_rate": 0.9437,
+  "optimal_rate": 0.8685,
+  "counts": {
+    "correct": 108,
+    "wrong_value": 77,
+    "not_optimal": 16,
+    "no_solve": 0,
+    "runtime_error": 12,
+    "timeout": 0,
+    "no_code": 0
+  },
+  "runtime_error_categories": {
+    "name_typo": 5,
+    "syntax_error": 5,
+    "other": 2
+  },
+  "objective_from_stdout": 0,
+  "mean_generation_tokens": 272.1,
+  "source_accuracy": 0.0047,
+  "accuracy_delta": 0.5023
+}

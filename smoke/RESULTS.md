@@ -98,7 +98,9 @@ xychart-beta
 
 Train loss falls from 0.763 to 0.023 and validation loss from 0.786 to 0.026, so the training loop works. With 8 near-identical templated examples, this is memorisation, not generalisation.
 
-For comparison, the earlier adapter trained on the broken `add_variable` data started higher, at a train loss of 1.002 (val 1.026). It finished at 0.037 (val 0.040). Valid PuLP starts closer to what the base model already writes, so the starting loss is lower.
+For comparison, the earlier adapter, trained on the first version of the smoke data, started higher: train loss 1.002 (val 1.026). It finished at 0.037 (val 0.040).
+
+That first version used `prob.add_variable(...)` and `stats.status.name`. `add_variable` is valid in PuLP 3.3.2; it's the newer API, and direct `pulp.LpVariable(...)` is deprecated there. `stats.status.name` does crash, because `solve()` returns an int. The lower starting loss most likely comes from `pulp.LpVariable` being the form the base model already writes, not from the new data being more valid.
 
 ### Adapter check (`smoke/05_check_adapter.py`)
 
